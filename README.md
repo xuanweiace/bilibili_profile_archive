@@ -1,0 +1,2 @@
+# bilibili_profile_archive
+一个基于springboot的对bilibili平台的个人数据档案（比如历史观看记录、历史评论等数据）进行归档的服务。自用。
