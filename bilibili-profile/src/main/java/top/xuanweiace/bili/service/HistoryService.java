@@ -14,6 +14,7 @@ import top.xuanweiace.bili.entities.Video;
 import top.xuanweiace.bili.entities.VideoVO;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -50,6 +51,7 @@ public class HistoryService {
         while(true) {
             VideoHistoryResp history = biliClient.getHistory(curPageNum, biliConf.maximumNumberOfVideosFetchedOnce);
             List<Video> videos = history.getData();
+            if(videos == null) break;
             int st_pos = (curPageNum-1)*biliConf.maximumNumberOfVideosFetchedOnce;
             log.info("正在收集 Bilibili 历史记录... 偏移量[{}, {}]", st_pos, st_pos + videos.size());
             List<VideoPO> videoPOs = videos.stream().map(Video::toPO).collect(Collectors.toList());

@@ -41,6 +41,9 @@ public class ScheduledService {
     private void batchFetchVideoesTasks() {
         log.info("batchFetchVideoesTasks in running...");
         VideoHistoryResp history = biliClient.getHistory(biliConf.numberOfVideosFetchedFromBilibiliPerMinute);
+        if (history == null) {
+            log.warn("[batchFetchVideoesTasks] 爬取内容为空");
+        }
         List<Video> videoList = history.getData();
 //        List<Video> videoList = new ArrayList<>();
 //        Video v = new Video();
@@ -50,7 +53,7 @@ public class ScheduledService {
 //        v.setPage("haha");
 //        v.setBusiness("bussd");
 //        videoList.add(v);
-//        log.info("len of videoList {}", videoList.size());
+        log.info("len of videoList {}", videoList.size());
         try {
             videoList.forEach(video -> videoDao.insertOrUpdate(video.toPO()));
         } catch (Exception e) {

@@ -2,6 +2,7 @@ package top.xuanweiace.bili.client;
 
 import com.alibaba.fastjson2.JSON;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
@@ -11,6 +12,7 @@ import top.xuanweiace.bili.conf.BiliConf;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author zxz
@@ -28,6 +30,8 @@ public class BiliClient {
     public VideoHistoryResp getHistory(int pageSize) {
         return getHistory(1, pageSize);
     }
+    //控制返回值必须非null
+    @NotNull
     public VideoHistoryResp getHistory(int pageNum, int pageSize) {
         // API 限制，在配置里，目前上限300
         if (pageSize > biliConf.maximumNumberOfVideosFetchedOnce) {
@@ -43,9 +47,11 @@ public class BiliClient {
 
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(headers);
         ResponseEntity<String> resp = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
-
-        VideoHistoryResp resp2 = JSON.parseObject(resp.getBody(), VideoHistoryResp.class);
-        return resp2;
+        log.info("resp={}", resp);
+        VideoHistoryResp result = JSON.parseObject(resp.getBody(), VideoHistoryResp.class);
+        return result;
+        //最好别下面这么写吧。因为不然的话，VideoHistoryResp里的List你也要这么处理，甚至里面所有对象都需要这样处理。
+//        return result != null ? result : new VideoHistoryResp();
     }
 
 }
