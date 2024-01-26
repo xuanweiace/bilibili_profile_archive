@@ -1,15 +1,12 @@
 package top.xuanweiace.bili.dao;
 
-import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.ToString;
 import org.springframework.beans.BeanUtils;
-import top.xuanweiace.bili.common.TimeUtil;
-import top.xuanweiace.bili.entities.Video;
-import top.xuanweiace.bili.entities.VideoVO;
+import top.xuanweiace.bili.client.Video;
 
 /**
  * @author zxz

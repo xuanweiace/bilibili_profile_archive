@@ -1,6 +1,5 @@
 package top.xuanweiace.bili.service;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,13 +7,10 @@ import top.xuanweiace.bili.client.BiliClient;
 import top.xuanweiace.bili.client.VideoHistoryResp;
 import top.xuanweiace.bili.conf.BiliConf;
 import top.xuanweiace.bili.dao.VideoDao;
-import top.xuanweiace.bili.dao.VideoMapper;
 import top.xuanweiace.bili.dao.VideoPO;
-import top.xuanweiace.bili.entities.Video;
+import top.xuanweiace.bili.client.Video;
 import top.xuanweiace.bili.entities.VideoVO;
 
-import javax.annotation.Resource;
-import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 

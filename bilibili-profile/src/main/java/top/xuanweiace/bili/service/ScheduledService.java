@@ -1,21 +1,21 @@
 package top.xuanweiace.bili.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import top.xuanweiace.bili.client.BiliClient;
+import top.xuanweiace.bili.client.MyDynamicBILIResp;
 import top.xuanweiace.bili.client.VideoHistoryResp;
 import top.xuanweiace.bili.conf.BiliConf;
+import top.xuanweiace.bili.dao.MyDynamicDao;
+import top.xuanweiace.bili.dao.MyDynamicPO;
 import top.xuanweiace.bili.dao.VideoDao;
-import top.xuanweiace.bili.dao.VideoMapper;
-import top.xuanweiace.bili.dao.VideoMapper2;
-import top.xuanweiace.bili.entities.Video;
-
-import javax.annotation.Resource;
-import java.util.ArrayList;
+import top.xuanweiace.bili.client.Video;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author zxz
@@ -32,16 +32,21 @@ public class ScheduledService {
     @Autowired
     BiliConf biliConf;
 
-    @Resource
-    VideoMapper videoMapper;
     @Autowired
     VideoDao videoDao;
+
+    @Autowired
+    MyDynamicDao myDynamicDao;
+
+    @Autowired
+    PushService pushService;
     //单线程执行，一轮任务执行完后开始计时
-    @Scheduled(fixedRate=60000) // 每一分钟执行一次
-    private void batchFetchVideoesTasks() {
+//    @Scheduled(fixedRate=60000) // 每一分钟执行一次
+    @Scheduled(cron="0 0 23 * * ?")
+    private void batchFetchHistoryTasks() {
         log.info("batchFetchVideoesTasks in running...");
         VideoHistoryResp history = biliClient.getHistory(biliConf.numberOfVideosFetchedFromBilibiliPerMinute);
-        if (history == null) {
+        if (history == null || history.getData() == null) {
             log.warn("[batchFetchVideoesTasks] 爬取内容为空");
         }
         List<Video> videoList = history.getData();
@@ -61,5 +66,31 @@ public class ScheduledService {
         }
 
         //        System.err.println("执行静态定时任务时间: " + LocalDateTime.now());
+    }
+
+    // 批量获取最新动态
+    @Scheduled(fixedRate=60000) // 每一分钟执行一次
+    private void batchFetchMyDynamicTask() {
+        log.info("batchFetchMyDynamicTask in running...");
+        MyDynamicBILIResp resp = biliClient.getMyDynamic();
+        if (resp == null) {
+            log.warn("[batchFetchMyDynamicTask] 爬取内容为空");
+        }
+        List<MyDynamicPO> myDynamicPOS = resp.toPOs();
+        // 0. 筛选视频动态
+        List<MyDynamicPO> filteredList = myDynamicPOS.stream()
+                .filter(po -> StringUtils.isNotBlank(po.getAid()))
+                .collect(Collectors.toList());
+        // 1. 将新动态存入数据库
+        myDynamicDao.batchInsert(filteredList);
+        // 2. 找到DB中未推送的
+        List<MyDynamicPO> needPushes = myDynamicDao.selectNotPushed();
+
+        // 2. 将这些动态逐一推送到Lark
+        List<MyDynamicPO> succPushes = pushService.pushMyDynamicToLarkOnce(needPushes);
+        succPushes.stream()
+                .forEach(dynamic -> dynamic.setIsPushed(1));
+        myDynamicDao.batchUpdate(succPushes);
+
     }
 }

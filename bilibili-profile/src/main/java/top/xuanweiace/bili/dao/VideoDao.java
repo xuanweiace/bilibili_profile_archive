@@ -1,15 +1,11 @@
 package top.xuanweiace.bili.dao;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import top.xuanweiace.bili.entities.Video;
-import top.xuanweiace.bili.entities.VideoVO;
 
 import javax.annotation.Resource;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  *
@@ -23,8 +19,6 @@ public class VideoDao {
     @Resource
     VideoMapper videoMapper;
 
-    @Resource
-    VideoMapper2 videoMapper2;
 
     //insertOrUpdate,首先直接更新，如果更新失败返回O,接着发起select,查询为0，接着才发起Insert
     @Transactional(rollbackFor = {Exception.class})

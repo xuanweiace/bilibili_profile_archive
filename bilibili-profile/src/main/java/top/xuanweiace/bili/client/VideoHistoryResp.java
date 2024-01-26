@@ -1,7 +1,6 @@
 package top.xuanweiace.bili.client;
 
 import lombok.Data;
-import top.xuanweiace.bili.entities.Video;
 
 import java.util.List;
 

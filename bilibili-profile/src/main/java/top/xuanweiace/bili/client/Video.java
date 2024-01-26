@@ -1,8 +1,6 @@
-package top.xuanweiace.bili.entities;
+package top.xuanweiace.bili.client;
 
 import com.alibaba.fastjson2.JSON;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,8 +8,7 @@ import lombok.ToString;
 import org.springframework.beans.BeanUtils;
 import top.xuanweiace.bili.common.TimeUtil;
 import top.xuanweiace.bili.dao.VideoPO;
-
-import java.util.List;
+import top.xuanweiace.bili.entities.VideoVO;
 
 /**
  * @author zxz
@@ -23,7 +20,6 @@ import java.util.List;
  * Video 要求字段和bilibili-api接口返回的字段名一致。
  * 一个视频的不同P，av和bv链接是一样的。可以通过url参数来区分
  * 比如：https://www.bilibili.com/video/BV1xN4y157JK?p=17
- *
 * */
 @Data
 @ToString

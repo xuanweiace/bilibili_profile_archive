@@ -7,12 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+import top.xuanweiace.bili.Utils.MUtils;
 import top.xuanweiace.bili.conf.BiliConf;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * @author zxz
@@ -26,7 +26,8 @@ public class BiliClient {
     @Autowired
     RestTemplate restTemplate;
 
-    private final String get_history_pattern = "https://api.bilibili.com/x/v2/history?pn=%d&ps=%d";
+    private final String GET_HISTORY_PATTERN = "https://api.bilibili.com/x/v2/history?pn=%d&ps=%d";
+    private final String GET_MY_DYNAMIC_URL = "https://api.bilibili.com/x/polymer/web-dynamic/v1/feed/all";
     public VideoHistoryResp getHistory(int pageSize) {
         return getHistory(1, pageSize);
     }
@@ -37,7 +38,7 @@ public class BiliClient {
         if (pageSize > biliConf.maximumNumberOfVideosFetchedOnce) {
             pageSize = biliConf.maximumNumberOfVideosFetchedOnce;
         }
-        String url = String.format(get_history_pattern, pageNum, pageSize);
+        String url = String.format(GET_HISTORY_PATTERN, pageNum, pageSize);
         log.info("url={}", url);
         HttpHeaders headers = new HttpHeaders();
         List<String> cookies = new ArrayList<>();
@@ -47,11 +48,28 @@ public class BiliClient {
 
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(headers);
         ResponseEntity<String> resp = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
-        log.info("resp={}", resp);
+        log.info("resp={}", MUtils.logCut(resp.toString()));
         VideoHistoryResp result = JSON.parseObject(resp.getBody(), VideoHistoryResp.class);
         return result;
         //最好别下面这么写吧。因为不然的话，VideoHistoryResp里的List你也要这么处理，甚至里面所有对象都需要这样处理。
 //        return result != null ? result : new VideoHistoryResp();
     }
+
+    @NotNull
+    public MyDynamicBILIResp getMyDynamic() {
+        log.info("url={}", GET_MY_DYNAMIC_URL);
+        HttpHeaders headers = new HttpHeaders();
+        List<String> cookies = new ArrayList<>();
+        cookies.add(biliConf.userCookie);
+        headers.put(HttpHeaders.COOKIE, cookies);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(headers);
+        ResponseEntity<String> resp = restTemplate.exchange(GET_MY_DYNAMIC_URL, HttpMethod.GET, entity, String.class);
+        log.info("resp={}", MUtils.logCut(resp.toString()));
+        MyDynamicBILIResp result = JSON.parseObject(resp.getBody(), MyDynamicBILIResp.class);
+        return result;
+    }
+
 
 }
