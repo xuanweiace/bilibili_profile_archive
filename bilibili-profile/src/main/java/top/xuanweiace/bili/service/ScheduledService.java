@@ -86,10 +86,11 @@ public class ScheduledService {
         // 2. 找到DB中未推送的
         List<MyDynamicPO> needPushes = myDynamicDao.selectNotPushed();
 
-        // 2. 将这些动态逐一推送到Lark
+        // 3. 将这些动态逐一推送到Lark
         List<MyDynamicPO> succPushes = pushService.pushMyDynamicToLarkOnce(needPushes);
-        succPushes.stream()
-                .forEach(dynamic -> dynamic.setIsPushed(1));
+
+        // 4. 维护db信息
+        succPushes.stream().forEach(dynamic -> dynamic.setIsPushed(1));
         myDynamicDao.batchUpdate(succPushes);
 
     }

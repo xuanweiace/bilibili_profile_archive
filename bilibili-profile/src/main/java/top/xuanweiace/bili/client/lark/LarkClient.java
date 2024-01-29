@@ -21,8 +21,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author zxz
@@ -109,9 +108,10 @@ public class LarkClient {
         Content content = new Content();
         Post post = new Post();
         Zh_cn zh_cn = new Zh_cn();
-        zh_cn.setTitle(po.getTitle());
 
-        ContentItem[] contentItems = new ContentItem[3];
+        zh_cn.setTitle(String.format("[%s] %s", po.getAutherName(), po.getTitle()));
+
+        List<ContentItem> contentItems = new ArrayList<>();
 
         ContentItem item1 = new ContentItem();
         item1.setTag("a");
@@ -121,24 +121,25 @@ public class LarkClient {
         ContentItem item2 = new ContentItem();
         item2.setTag("text");
         item2.setText("\n简介:\n" + po.getDescription()+"\n");
-        contentItems[0] = item1;
-        contentItems[1] = item2;
+
+        contentItems.add(item1);
+        contentItems.add(item2);
         ContentItem item3 = new ContentItem();
         if(imagekey != "") {
             item3.setTag("img");
             item3.setImage_key(imagekey);
         }
-        contentItems[2] = item3;
+        contentItems.add(item3);
 
 
-        zh_cn.setContent(new ContentItem[][]{contentItems});
+        zh_cn.setContent(new ArrayList<>(Arrays.asList(contentItems)));
 
         post.setZh_cn(zh_cn);
         content.setPost(post);
         requestBody.setContent(content);
 
         HttpEntity<LarkPushRequestBody> entity = new HttpEntity<>(requestBody, headers);
-
+        System.out.println("entity = " + entity);
         String url = "https://open.feishu.cn/open-apis/bot/v2/hook/" + larkConf.webhook;
         ResponseEntity<String> response = restTemplate.postForEntity(url, entity, String.class);
         log.info("此次飞书推送webhook发送为:{},  返回值:{}",entity,response.getBody());

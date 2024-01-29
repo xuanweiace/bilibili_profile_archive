@@ -3,6 +3,9 @@ package top.xuanweiace.bili.client.lark;
 import lombok.Data;
 import lombok.ToString;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author zxz
  * @date 2024/1/25 23:19
@@ -37,6 +40,7 @@ class Content {
 @Data
 @ToString
 class Post {
+
     private Zh_cn zh_cn;
 
     public Zh_cn getZh_cn() {
@@ -51,7 +55,8 @@ class Post {
 @ToString
 class Zh_cn {
     private String title;
-    private ContentItem[][] content;
+    private List<List<ContentItem>> content;
+//    private ContentItem[][] content;
 }
 @Data
 @ToString
@@ -60,7 +65,7 @@ class ContentItem {
     private String text;
     private String href;
     private String image_key;
-    public ContentItem() {
+    public ContentItem() {// 默认是text类型，这样直接new一个出来就可以用了，不至于出现api报错说没有tag的问题
         tag = "text";
         text = "";
     }

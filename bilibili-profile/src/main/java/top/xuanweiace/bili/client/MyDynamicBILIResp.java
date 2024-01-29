@@ -99,6 +99,13 @@ public class MyDynamicBILIResp {
                 po.setType(item.modules.module_dynamic.major.type);
             } catch (NullPointerException e) {}
 
+
+            try {
+                po.setAutherName(item.modules.module_author.name);
+                po.setMid(item.modules.module_author.mid);
+            } catch (NullPointerException e) {
+                //TODO 发送告警，是需要关注的异常。如果真到了这一步，则对【无作者的】api数据需要想办法处理
+            }
             li.add(po);
         }
         return li;
