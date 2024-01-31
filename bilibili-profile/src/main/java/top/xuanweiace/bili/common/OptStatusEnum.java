@@ -7,7 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum OptStatusEnum {
     SUCCESS("0000", "操作成功"),
-
+    Business_Error("5001","业务错误"),
     UNKNOWN_ERROR("9999", "未知错误");
 
     final String code;

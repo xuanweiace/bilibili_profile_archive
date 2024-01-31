@@ -34,7 +34,16 @@ public class MyDynamicDao extends ServiceImpl<MyDynamicMapper, MyDynamicPO> impl
         wrapper.eq("is_pushed",0);
         return myDynamicMapper.selectList(wrapper);
     }
-
+    public MyDynamicPO selectOneByAutherName(String name) {
+        QueryWrapper<MyDynamicPO> wrapper = new QueryWrapper<>();
+        wrapper.eq("auther_name",name);
+//        return myDynamicMapper.selectOne(wrapper);TODO 为什么不行？多条记录会报错：com.baomidou.mybatisplus.core.exceptions.MybatisPlusException: One record is expected, but the query result is multiple records
+        List<MyDynamicPO> pos = myDynamicMapper.selectList(wrapper);
+        if(pos != null && pos.size() >= 1) {
+            return pos.get(0);
+        }
+        return null;
+    }
 
 //    //TODO 调试好
 //    public List<MyDynamicPO> selectNotPushed(List<MyDynamicPO> poList) {

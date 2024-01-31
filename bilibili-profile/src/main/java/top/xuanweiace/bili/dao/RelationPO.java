@@ -1,5 +1,6 @@
 package top.xuanweiace.bili.dao;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,6 +17,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @TableName("relation")
 public class RelationPO {
+    @TableId
     String mid;
     int relation;
 
