@@ -41,7 +41,7 @@ public class AdminController {
 
     // 添加up主进入黑名单，不再接受推送
     @PostMapping("/blacklist")
-    public ResponseResult setUpToBlackList(@RequestBody String uname) { //TODO 后续还是改成param吧
+    public ResponseResult setUPToBlackList(@RequestBody String uname) { //TODO 后续还是改成param吧
         System.out.println("uname = " + uname);
         MyDynamicPO po = myDynamicDao.selectOneByAutherName(uname);
         if(po == null) {
@@ -59,6 +59,30 @@ public class AdminController {
         }
 
         return ResponseResult.success();
-//        return larkClient.uploadImg("https://i2.hdslb.com/bfs/face/ecbfb2429351cd78532608d4b48d510c9f4a5b4f.jpg");
     }
+
+
+    // 添加up主进入白名单，恢复接受推送
+    @PostMapping("/whitelist")
+    public ResponseResult setUPToWhiteList(@RequestBody String uname) {
+        System.out.println("uname = " + uname);
+        MyDynamicPO po = myDynamicDao.selectOneByAutherName(uname);
+        if(po == null) {
+            return ResponseResult.error(OptStatusEnum.Business_Error.getCode(), "add blacklist failed");
+        }
+        String mid = po.getMid();
+        RelationPO relationPO = relationMapper.selectById(mid);
+        if(relationPO != null && relationPO.getRelation() == RelationEnum.WHITE_LIST.getCode()) {
+            return ResponseResult.error(OptStatusEnum.Business_Error.getCode(), "It's already on the whitelist");
+        }
+        if(relationPO == null) {
+            relationMapper.insert(new RelationPO(mid, RelationEnum.WHITE_LIST.getCode()));
+        } else {
+            relationMapper.updateById(new RelationPO(mid, RelationEnum.WHITE_LIST.getCode()));
+        }
+
+        return ResponseResult.success();
+    }
+
+
 }
