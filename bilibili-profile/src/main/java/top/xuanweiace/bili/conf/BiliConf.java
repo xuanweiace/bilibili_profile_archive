@@ -20,6 +20,17 @@ public class BiliConf {
 
     @Value("${bili.maximum-number-of-videos-fetched-once}")
     public Integer maximumNumberOfVideosFetchedOnce;
+
+    @Value("${bili.ac_time_value}")
+    public String ac_time_value;
+
+    public String getRefreshToken() {
+        return ac_time_value;
+    }
+    public void setRefreshToken(String newToken) {
+        ac_time_value = newToken;
+    }
+
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();

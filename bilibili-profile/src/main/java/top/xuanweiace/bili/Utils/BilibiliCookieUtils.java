@@ -16,16 +16,17 @@ import javax.crypto.spec.PSource;
 
 public class BilibiliCookieUtils {
     public static void main(String[] args) throws Exception {
-        System.out.println(getCorrespondPath(System.currentTimeMillis()));
+//        System.out.println(getCorrespondPath(System.currentTimeMillis()));
+        System.out.println(getCorrespondPath(1707321588353L));
     }
-
-    public static String getCorrespondPath(long timestamp) throws Exception {
-        String publicKeyPEM = "-----BEGIN PUBLIC KEY----- " +
+    private static final String publicKeyPEM = "-----BEGIN PUBLIC KEY----- " +
         "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDLgd2OAkcGVtoE3ThUREbio0Eg\n" +
         "Uc/prcajMKXvkCKFCWhJYJcLkcM2DKKcSeFpD/j6Boy538YXnR6VhcuUJOhH2x71\n" +
         "nzPjfdTcqMz7djHum0qSZA0AyCBDABUqCrfNgCiJ00Ra7GmRj+YCK1NJEuewlb40\n" +
         "JNrRuoEUXpabUzGB8QIDAQAB\n" +
         "-----END PUBLIC KEY-----";
+    public static String getCorrespondPath(long timestamp) throws Exception {
+
 
         byte[] decodedKeyBytes = Base64.getDecoder().decode(publicKeyPEM
                 .replace("-----BEGIN PUBLIC KEY-----", "")

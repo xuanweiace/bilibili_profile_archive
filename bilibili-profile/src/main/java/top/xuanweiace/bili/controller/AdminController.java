@@ -2,6 +2,7 @@ package top.xuanweiace.bili.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import top.xuanweiace.bili.client.BiliClient;
 import top.xuanweiace.bili.client.lark.LarkClient;
 import top.xuanweiace.bili.common.OptStatusEnum;
 import top.xuanweiace.bili.common.ResponseResult;
@@ -23,6 +24,8 @@ public class AdminController {
 
     @Autowired
     LarkClient larkClient;
+    @Autowired
+    BiliClient biliClient;
 
     @Resource
     RelationMapper relationMapper;
@@ -31,12 +34,15 @@ public class AdminController {
 
     @GetMapping("/test")
     public boolean get() {
-        MyDynamicPO po = new MyDynamicPO();
-        po.setBvid("BV1ac411x7Bq");
-        po.setTitle("这是标题");
-        po.setCover("https://i2.hdslb.com/bfs/face/ecbfb2429351cd78532608d4b48d510c9f4a5b4f.jpg");
-        return larkClient.pushBilibiliMyDynamic(po);
+        biliClient.refreshCookie();
+        System.out.println("biliClient.cookies = " + biliClient.cookies);
+//        MyDynamicPO po = new MyDynamicPO();
+//        po.setBvid("BV1ac411x7Bq");
+//        po.setTitle("这是标题");
+//        po.setCover("https://i2.hdslb.com/bfs/face/ecbfb2429351cd78532608d4b48d510c9f4a5b4f.jpg");
+//        return larkClient.pushBilibiliMyDynamic(po);
 //        return larkClient.uploadImg("https://i2.hdslb.com/bfs/face/ecbfb2429351cd78532608d4b48d510c9f4a5b4f.jpg");
+        return true;
     }
 
     // 添加up主进入黑名单，不再接受推送
