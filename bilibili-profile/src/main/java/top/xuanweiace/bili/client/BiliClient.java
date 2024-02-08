@@ -109,40 +109,40 @@ public class BiliClient {
 
         String url = String.format(refresh_csrf_url_PATTERN, correspondPath);
         System.out.println("url="+url);
-        OkHttpClient client = new OkHttpClient().newBuilder()
-                .build();
-        Request request = new Request.Builder()
-                .url(url)
-                .addHeader("Cookie", getBilibiliClientCookie())
-                .addHeader("User-Agent", "Apifox/1.0.0 (https://apifox.com)")
-                .build();
-        String respBody = "";
-        try {
-            Response response = client.newCall(request).execute();
-            respBody = response.body().string();
-//            System.out.println(respBody);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        //方法1
+//        OkHttpClient client = new OkHttpClient().newBuilder()
+//                .build();
+//        Request request = new Request.Builder()
+//                .url(url)
+//                .addHeader("Cookie", getBilibiliClientCookie())
+//                .addHeader("User-Agent", "Apifox/1.0.0 (https://apifox.com)")
+//                .build();
+//        String respBody = "";
+//        try {
+//            Response response = client.newCall(request).execute();
+//            respBody = response.body().string();
+////            System.out.println(respBody);
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
 
+        //方法2
         HttpHeaders headers = new HttpHeaders();
         List<String> cookies = new ArrayList<>();
         cookies.add(getBilibiliClientCookie());
         headers.put(HttpHeaders.COOKIE, cookies);
         headers.set(HttpHeaders.USER_AGENT,"Apifox/1.0.0 (https://apifox.com)");
-//        headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(headers);
 
 
-//        ResponseEntity<String> resp = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
-//        try {
-//            PrintStream out = new PrintStream(System.out, true, "UTF-8");
-//            out.println("resp.getBody() = " + resp.getBody().toString());
-//        } catch (UnsupportedEncodingException e) {
-//            throw new RuntimeException(e);
-//        }
-//        String respBody = resp.getBody();
-
+        ResponseEntity<String> resp = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+        String respBody = null;
+        try {
+            respBody = new String(resp.getBody().getBytes("ISO-8859-1"), "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println("respBody: " + respBody);
 
         Pattern pattern = Pattern.compile("<div id=\"1-name\">(.*?)</div>");
         Matcher matcher = pattern.matcher(respBody);

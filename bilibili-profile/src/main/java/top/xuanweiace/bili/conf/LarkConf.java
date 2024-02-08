@@ -9,8 +9,8 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class LarkConf {
-    @Value(value = "${lark.Bearer}")
-    public String bearer;
+//    @Value(value = "${lark.Bearer}")
+//    public String bearer;
 
     @Value(value = "${lark.webhook}")
     public String webhook;

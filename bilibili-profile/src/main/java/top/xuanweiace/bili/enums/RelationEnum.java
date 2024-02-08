@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
  * @date 2024/1/30 2:25
  */
 public enum RelationEnum {
-    UNKNOWN("位置", 0),
+    UNKNOWN("未知", 0),
     WHITE_LIST("白名单",1),
     BLACK_LIST("黑名单", 2);
 

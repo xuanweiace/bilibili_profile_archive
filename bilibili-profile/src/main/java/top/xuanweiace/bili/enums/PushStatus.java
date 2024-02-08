@@ -10,7 +10,9 @@ import java.util.stream.Collectors;
  */
 public enum PushStatus {
     NOT_PUSH("未推送", 0),
-    PUSHED_LARK("已推送到飞书", 1);
+    PUSHED_LARK("已推送到飞书", 1),
+    Temporarily_Abandoned_PUSH("暂时不推送",990);
+
 //    PUSHED_WX("已推送到微信", 2);
 
     private final String text;

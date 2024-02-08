@@ -94,4 +94,15 @@ public class ScheduledService {
         myDynamicDao.batchUpdate(succPushes);
 
     }
+
+    @Scheduled(cron="0 0 23 * * ?")
+    private void refreshBilibiliCookie() {
+        log.info("refreshBilibiliCookie in running... 开始尝试更新B站Cookie");
+        boolean b = biliClient.refreshCookie();
+        if(b == false) {
+            log.error("[refreshBilibiliCookie]更新Cookie出错了！！请及时查看！！！");
+        } else {
+            log.info("[refreshBilibiliCookie]更新B站Cookie已完成");
+        }
+    }
 }

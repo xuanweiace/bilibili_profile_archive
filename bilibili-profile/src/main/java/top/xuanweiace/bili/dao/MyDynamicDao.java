@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import top.xuanweiace.bili.enums.PushStatus;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -31,7 +32,7 @@ public class MyDynamicDao extends ServiceImpl<MyDynamicMapper, MyDynamicPO> impl
 
     public List<MyDynamicPO> selectNotPushed() {
         QueryWrapper<MyDynamicPO> wrapper = new QueryWrapper<>();
-        wrapper.eq("is_pushed",0);
+        wrapper.eq("is_pushed", PushStatus.NOT_PUSH.getCode());
         return myDynamicMapper.selectList(wrapper);
     }
     public MyDynamicPO selectOneByAutherName(String name) {

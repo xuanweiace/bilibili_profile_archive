@@ -45,6 +45,14 @@ public class AdminController {
         return true;
     }
 
+    @GetMapping("/get_bili_cookie")
+    public ResponseResult get_bili_cookie() {
+        biliClient.refreshCookie();
+        System.out.println("biliClient.cookies = " + biliClient.cookies);
+        return ResponseResult.success(biliClient.cookies);
+    }
+
+
     // 添加up主进入黑名单，不再接受推送
     @PostMapping("/blacklist")
     public ResponseResult setUPToBlackList(@RequestBody String uname) { //TODO 后续还是改成param吧
@@ -87,6 +95,13 @@ public class AdminController {
             relationMapper.updateById(new RelationPO(mid, RelationEnum.WHITE_LIST.getCode()));
         }
 
+        return ResponseResult.success();
+    }
+
+    //TODO 模糊查询，在发来的text里找到up主的mid并进行白名单操作
+    @PostMapping("/FuzzyWhitelist")
+    public ResponseResult fuzzySetUPToWhitelist(@RequestBody String text) {
+        System.out.println("text = " + text);
         return ResponseResult.success();
     }
 
