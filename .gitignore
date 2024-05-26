@@ -25,5 +25,5 @@ replay_pid*
 
 # project related
 application.properties
-
-
+target
+.idea
