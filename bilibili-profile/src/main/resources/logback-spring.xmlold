@@ -1,4 +1,0 @@
-<!--<logger level="info" name="org.springframework.boot.autoconfigure.logging"  additivity="false">-->
-<!--    <appender-ref ref="console"/>-->
-<!--    <appender-ref ref="logFile" />-->
-<!--</logger>-->

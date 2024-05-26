@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
+<include resource="org/springframework/boot/logging/logback/base.xml"/>
+<property name="serviceName" value="cloud-mini-comsumer"/>
+<property name="logHome" value="./logs/"/>
+<contextName>${serviceName}</contextName>
+
+<!--输出到控制台-->
+<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+        <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+        <charset>UTF-8</charset>
+    </encoder>
+</appender>
+
+<!--按天生成日志-->
+<appender name="logFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+<!--    <Prudent>true</Prudent>-->
+
+    <!--日志输出格式-->
+    <encoder>
+        <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+        <charset>UTF-8</charset>
+    </encoder>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+        <FileNamePattern>
+            ${logHome}/%d{yyyy-MM-dd}/%d{yyyy-MM-dd}.log
+        </FileNamePattern>
+        <maxHistory>30</maxHistory>
+    </rollingPolicy>
+<!--    <layout class="ch.qos.logback.classic.PatternLayout">-->
+<!--        <Pattern>-->
+<!--            %d{yyyy-MM-dd HH:mm:ss} -%msg%n-->
+<!--        </Pattern>-->
+<!--    </layout>-->
+</appender>
+
+<root level="info">
+    <appender-ref ref="console"/>
+    <appender-ref ref="logFile"/>
+</root>
+
+</configuration>

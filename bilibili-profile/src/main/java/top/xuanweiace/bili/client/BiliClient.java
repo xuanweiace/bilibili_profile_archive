@@ -21,10 +21,7 @@ import top.xuanweiace.bili.conf.BiliConf;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -110,21 +107,21 @@ public class BiliClient {
         String url = String.format(refresh_csrf_url_PATTERN, correspondPath);
         System.out.println("url="+url);
         //方法1
-//        OkHttpClient client = new OkHttpClient().newBuilder()
-//                .build();
-//        Request request = new Request.Builder()
-//                .url(url)
-//                .addHeader("Cookie", getBilibiliClientCookie())
-//                .addHeader("User-Agent", "Apifox/1.0.0 (https://apifox.com)")
-//                .build();
-//        String respBody = "";
-//        try {
-//            Response response = client.newCall(request).execute();
-//            respBody = response.body().string();
-////            System.out.println(respBody);
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
+        OkHttpClient client = new OkHttpClient().newBuilder()
+                .build();
+        Request request = new Request.Builder()
+                .url(url)
+                .addHeader("Cookie", getBilibiliClientCookie())
+                .addHeader("User-Agent", "Apifox/1.0.0 (https://apifox.com)")
+                .build();
+        String respBody = "";
+        try {
+            Response response = client.newCall(request).execute();
+            respBody = response.body().string();
+//            System.out.println(respBody);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         //方法2
         HttpHeaders headers = new HttpHeaders();
@@ -135,15 +132,15 @@ public class BiliClient {
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(headers);
 
 
-        ResponseEntity<String> resp = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
-        String respBody = null;
-        try {
-            respBody = new String(resp.getBody().getBytes("ISO-8859-1"), "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
+//        ResponseEntity<String> resp = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+//        System.out.println("resp.getHeaders().toString() = " + resp.getHeaders().toString());
+//        String respBody = resp.toString();
+//        try {
+//            respBody = new String(resp.getBody().getBytes("UTF-8"), "UTF-8");
+//        } catch (UnsupportedEncodingException e) {
+//            throw new RuntimeException(e);
+//        }
         System.out.println("respBody: " + respBody);
-
         Pattern pattern = Pattern.compile("<div id=\"1-name\">(.*?)</div>");
         Matcher matcher = pattern.matcher(respBody);
         String refresh_csrf = "";
@@ -236,7 +233,7 @@ public class BiliClient {
         List<HttpCookie> newCookies = new ArrayList<>();
         for(String c : setCookies) {
             List<HttpCookie> httpCookies = convertStringToCookies(c);
-            for(HttpCookie httpCookie :httpCookies) {
+            for(HttpCookie httpCookie : httpCookies) {
                 if(mp.containsKey(httpCookie.getName())) {
                     if(mp.get(httpCookie.getName()).equals(httpCookie.getValue()) == false) {
                         log.error("[setToBilibiliClientCookie]有问题请排查，多个Set-Cookie中，相同key但是value不同,已有为({},{}),新的为{}",httpCookie.getName(),mp.get(httpCookie.getName()),httpCookie);
@@ -247,39 +244,21 @@ public class BiliClient {
                 }
             }
         }
-        cookies = newCookies;
+        String delimiter = String.join("", Collections.nCopies(100,"*"));;
+        log.info("[setToBilibiliClientCookie] 正在更新到本地Cookie...\n{}\n更新前={}\n{}\n更新后={}",delimiter,cookies,delimiter, newCookies);
+        // 实现upsert，即保留原始Cookie
+        for (HttpCookie newCookie : newCookies) {
+            int i = 0;
+            for(; i<cookies.size(); i++) {
+                if(cookies.get(i).getName().equals(newCookie.getName()))  {
+                    cookies.set(i,new HttpCookie(newCookie.getName(),newCookie.getValue()));
+                }
+            }
+            if(i == cookies.size()) {
+                cookies.add(new HttpCookie(newCookie.getName(), newCookie.getValue()));
+            }
+        }
         return true;
     }
 
 }
-
-
-//import org.springframework.http.*;
-//import org.springframework.util.LinkedMultiValueMap;
-//import org.springframework.util.MultiValueMap;
-//import org.springframework.web.client.RestTemplate;
-//
-//import java.util.Map;
-//
-//public class Main {
-//    publicstaticvoidmain(String[] args) {
-//        RestTemplaterestTemplate = newRestTemplate();
-//        HttpHeadersheaders = newHttpHeaders();
-//        headers.set("Cookie", "SESSDATA=c0ff6525%2C1722873629%2C461e8%2A21CjB-IJgvNmvt1Z0aeCc_XCoFPZg4eOi81ICvzgsVaGX1MkLiiTIAWwEs1mpyTs7sxzASVkg5dUNva3ZvLXphaXc4dTdXMTVyWGhndUxrXzdMVTFuQ2ZOUU9OX1p5Nk5PQW5EY1htMUdBSjNYSzc2RFpMT3hRRU1ZaXRyR1YyTjZuU1FZbGVKNzlBIIEC");
-//        headers.set("User-Agent", "Apifox/1.0.0(https://apifox.com)");
-//        MultiValueMap<String, String> body = newLinkedMultiValueMap <>();
-//        body.add("csrf", "d93c3ab19225fd6ddab299a7cc977c58");
-//        body.add("refresh_csrf", "8999626fb81c52a0dbfd218b89babbf6");
-//        body.add("source", "main_web");
-//        body.add("refresh_token", "9c8dbf22315faefb038102cc5539d721");
-//        HttpEntity<MultiValueMap<String, String>> requestEntity = newHttpEntity <>(body, headers);
-//        ResponseEntity<Map<String, Object>> response = restTemplate.exchange("https://passport.bilibili.com/x/passport-login/web/cookie/refresh", HttpMethod.POST, requestEntity, new ParameterizedTypeReference < Map < String, Object >> ()
-//        {
-//        });
-//        Map<String, Object> responseBody = response.getBody();
-//        System.out.println(responseBody.get("code"));
-//        System.out.println(responseBody.get("message"));
-//        System.out.println(responseBody.get("ttl"));
-//        System.out.println(responseBody.get("data"));
-//    }
-//}

@@ -1,5 +1,6 @@
 package top.xuanweiace.bili.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import top.xuanweiace.bili.client.BiliClient;
@@ -20,6 +21,7 @@ import javax.annotation.Resource;
  */
 @RestController()
 @RequestMapping("/v1/admin")
+@Slf4j
 public class AdminController {
 
     @Autowired
@@ -32,10 +34,11 @@ public class AdminController {
     @Autowired
     MyDynamicDao myDynamicDao;
 
+
     @GetMapping("/test")
     public boolean get() {
-        biliClient.refreshCookie();
-        System.out.println("biliClient.cookies = " + biliClient.cookies);
+//        biliClient.refreshCookie();
+        log.info("biliClient.cookies = " + biliClient.cookies);
 //        MyDynamicPO po = new MyDynamicPO();
 //        po.setBvid("BV1ac411x7Bq");
 //        po.setTitle("这是标题");

@@ -23,3 +23,7 @@
 hs_err_pid*
 replay_pid*
 
+# project related
+application.properties
+
+
