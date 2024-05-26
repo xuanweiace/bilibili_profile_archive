@@ -8,7 +8,7 @@ CREATE TABLE `video` (
                          `title` varchar(255) DEFAULT NULL COMMENT '视频标题',
                          `pubdate` bigint(20) NOT NULL COMMENT '稿件发布时间',
                          `ctime` bigint(20) NOT NULL,
-                         `desc` text COMMENT '视频简介',
+                         `desc` text COMMENT '视频的简介',
                          `state` int(11) NOT NULL,
                          `duration` int(11) NOT NULL COMMENT '视频总计持续时长（所有分P）',
                          `owner` varchar(255) DEFAULT NULL COMMENT 'json存储 Owner对象',
